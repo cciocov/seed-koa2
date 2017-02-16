@@ -1,0 +1,12 @@
+'use strict';
+
+require('dotenv').config();
+
+const path = require('path');
+
+module.exports = {
+  'migrations-path': path.resolve('database', 'migrations'),
+  'url': process.env.DATABASE_URL
+};
+
+// vim: set ft=javascript:

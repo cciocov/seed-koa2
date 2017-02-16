@@ -1,0 +1,48 @@
+{
+  "host": "HOST",
+  "port": "PORT",
+  "database": {
+    "url": "DATABASE_URL",
+    "logging": true
+  },
+  "auth": {
+    "secret": "SECRET",
+    "tokenTTL": 86400,
+    "facebook": {
+      "clientID": "FACEBOOK_CLIENT_ID",
+      "clientSecret": "FACEBOOK_SECRET",
+      "profileFields": [
+        "id",
+        "name",
+        "email",
+        "picture.type(square).height(128).width(128)"
+      ],
+      "scope": ["public_profile", "email"]
+    },
+    "google": {
+      "clientID": "GOOGLE_CLIENT_ID",
+      "clientSecret": "GOOGLE_SECRET",
+      "scope": ["profile", "email"]
+    }
+  },
+  "public": {
+    "path": "../public",
+    "maxage": 0
+  },
+  "views": {
+    "path": "../views",
+    "map": {
+      "html": "handlebars"
+    },
+    "options": {
+      "pretty": true
+    },
+    "defaultExt": "pug"
+  },
+  "middleware": [
+    "$handlerInfo",
+    "auth",
+    "$handlerMiddleware",
+    "$handler"
+  ]
+}
