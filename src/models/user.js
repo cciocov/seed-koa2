@@ -1,5 +1,7 @@
 'use strict';
 
+const { createJWT } = require('_/modules/utils');
+
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('user', {
     username: {
@@ -33,6 +35,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: 'unknown'
+    },
+    permissions: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: '[]',
+      set: function(value) {
+        this.setDataValue('permissions', JSON.stringify(value));
+      },
+      get: function() {
+        return JSON.parse(this.getDataValue('permissions'));
+      }
     }
   }, {
     classMethods: {
@@ -49,23 +62,26 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Determine if the user profile is complete or not.
        */
-      profileComplete: function() {
+      isProfileComplete: function() {
         return !!(
           this.email && this.firstName && this.lastName
         );
       },
 
       /**
-       * Check if this user has the given set of permissions.
+       * Create a JWT for this user.
        */
-      hasPermissions: async function(permissions) {
-        return true;
+      createJWT: async function() {
+        return createJWT({
+          userId: this.id,
+          pa: this.permissions
+        });
       }
     },
 
     hooks: {
       beforeCreate: function(user) {
-        user.status = user.profileComplete() ? 'active' : 'incomplete';
+        user.status = user.isProfileComplete() ? 'active' : 'incomplete';
       }
     }
   });

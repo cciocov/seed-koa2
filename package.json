@@ -5,8 +5,9 @@
   "description": "A Koa2/GraphQL/Sequelize server written in ES6.",
   "main": "src/index.js",
   "scripts": {
-    "start": "sequelize db:migrate && node src/",
-    "dev": "DEBUG=app:* nodemon src/",
+    "postinstall": "node bin/postinstall.js",
+    "start": "sequelize db:migrate && node src/app",
+    "dev": "DEBUG=app:* nodemon src/app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +28,7 @@
   },
   "dependencies": {
     "babel-plugin-transform-async-to-generator": "6.22.0",
+    "babel-plugin-transform-decorators-legacy": "1.3.4",
     "babel-polyfill": "6.22.0",
     "babel-preset-latest": "6.22.0",
     "babel-register": "6.22.0",
@@ -34,6 +36,7 @@
     "consolidate": "0.14.5",
     "debug": "2.6.0",
     "dotenv": "4.0.0",
+    "fs-extra": "3.0.1",
     "graphql": "0.9.1",
     "graphql-server-koa": "0.6.0",
     "graphql-tools": "0.10.0",

@@ -1,0 +1,276 @@
+---
+swagger: "2.0"
+info:
+  title: "API Documentation"
+  description: ""
+  version: "1.0.0"
+host: ""
+basePath: "/api/v1"
+tags:
+- name: "Authentication"
+- name: "User"
+schemes:
+- "http"
+paths:
+  "/auth/login":
+    post:
+      tags:
+      - "Authentication"
+      summary: "Login with e-mail/username and password"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "payload"
+        in: "body"
+        description: "Payload object with identifier (e-mail or username) and password"
+        required: true
+        schema:
+          example:
+            identifier: "user@example.com"
+            password: "password"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/JWT"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  "/auth/{provider}-token":
+    get:
+      tags:
+      - "Authentication"
+      summary: "Register or login with a 3rd party provider"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "provider"
+        in: "path"
+        description: "Provider name, either \"facebook\" or \"google\""
+        required: true
+        type: "string"
+        default: "facebook"
+      - name: "access_token"
+        in: "query"
+        description: "Provider access token, usually obtained using their SDK"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            example:
+              jwt: "..."
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        500:
+          description: "Internal Server Error"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  "/users":
+    get:
+      tags:
+      - "Users"
+      summary: "Read users"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "Pagination offset"
+        type: "integer"
+      - name: "limit"
+        in: "query"
+        description: "Pagination limit"
+        type: "integer"
+      - name: "sort"
+        in: "query"
+        description: "Sorting rules"
+        type: "string"
+        example: "+lastName,-firstName"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            type: "object"
+            properties:
+              results:
+                type: "array"
+                items:
+                  $ref: "#/definitions/User"
+              pagination:
+                $ref: "#/definitions/Pagination"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+      security:
+      - JWT
+    post:
+      tags:
+      - "Users"
+      summary: "Create user"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "payload"
+        in: "body"
+        description: "User object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+  "/users/{id}":
+    get:
+      tags:
+      - "Users"
+      summary: "Read user"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+      security:
+      - JWT
+    post:
+      tags:
+      - "Users"
+      summary: "Update user"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User ID"
+        required: true
+        type: "string"
+      - name: "payload"
+        in: "body"
+        description: "Updated user object"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+      security:
+      - JWT
+    delete:
+      tags:
+      - "Users"
+      summary: "Delete user"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "User ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Bad Request"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+        404:
+          description: "Not Found"
+          schema:
+            $ref: "#/definitions/ApiErrorResponse"
+      security:
+      - JWT
+
+securityDefinitions:
+  JWT:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      emailVerified:
+        type: "boolean"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      photo:
+        type: "string"
+      status:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      updatedAt:
+        type: "string"
+        format: "date-time"
+  JWT:
+    type: "object"
+    properties:
+      jwt:
+        type: "string"
+  ApiErrorResponse:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+  Pagination:
+    type: "object"
+    properties:
+      total:
+        type: "integer"
+      offset:
+        type: "integer"
+      limit:
+        type: "integer"

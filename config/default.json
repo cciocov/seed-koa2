@@ -5,24 +5,50 @@
     "url": "DATABASE_URL",
     "logging": true
   },
-  "auth": {
+  "authentication": {
     "secret": "SECRET",
     "tokenTTL": 86400,
-    "facebook": {
-      "clientID": "FACEBOOK_CLIENT_ID",
-      "clientSecret": "FACEBOOK_SECRET",
-      "profileFields": [
-        "id",
-        "name",
-        "email",
-        "picture.type(square).height(128).width(128)"
-      ],
-      "scope": ["public_profile", "email"]
-    },
-    "google": {
-      "clientID": "GOOGLE_CLIENT_ID",
-      "clientSecret": "GOOGLE_SECRET",
-      "scope": ["profile", "email"]
+    "local": true,
+    "providers": {
+      "facebook": {
+        "clientID": "FACEBOOK_CLIENT_ID",
+        "clientSecret": "FACEBOOK_SECRET",
+        "profileFields": [
+          "id",
+          "name",
+          "email",
+          "picture.type(square).height(128).width(128)"
+        ],
+        "scope": ["public_profile", "email"],
+        "strategy": {
+          "module": "passport-facebook",
+          "path": "Strategy",
+          "protocol": "oauth2"
+        }
+      },
+      "facebook-token": {
+        "configKey": "facebook",
+        "strategy": {
+          "module": "passport-facebook-token",
+          "path": ""
+        }
+      },
+      "google": {
+        "clientID": "GOOGLE_CLIENT_ID",
+        "clientSecret": "GOOGLE_SECRET",
+        "scope": ["profile", "email"],
+        "strategy": {
+          "module": "passport-google-oauth20",
+          "path": "Strategy",
+          "protocol": "oauth2"
+        }
+      },
+      "google-token": {
+        "configKey": "google",
+        "strategy": {
+          "module": "passport-google-token"
+        }
+      }
     }
   },
   "public": {
@@ -40,9 +66,22 @@
     "defaultExt": "pug"
   },
   "middleware": [
-    "$handlerInfo",
+    "$routeInfo",
     "auth",
-    "$handlerMiddleware",
-    "$handler"
+    "$actionMiddleware",
+    "$action"
+  ],
+  "permissions": [
+    "-- only append to this array, nothing else --",
+    {
+      "name": "*",
+      "desc": "Provides access to the entire system.",
+      "label": "* permission"
+    },
+    {
+      "name": "sample_permission_1",
+      "desc": "Just a sample permission, change accordingly.",
+      "label": "Sample Permission 1"
+    }
   ]
 }

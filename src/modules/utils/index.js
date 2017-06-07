@@ -4,7 +4,7 @@ const _ = require('lodash');
 const consolidate = require('consolidate');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const config = require('../config');
+const config = require('_/config');
 
 /**
  * Render a template.

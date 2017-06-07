@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(app) {
+module.exports = function() {
   return async function errors(ctx, next) {
     try {
       await next();

@@ -1,14 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-const config = require('../../config');
-const models = require('../models');
-const utils = require('../utils');
+const config = require('_/config');
+const models = require('_/models');
+const { render } = require('_/modules/utils');
 
 module.exports = function setupApp() {
-  const app = this;
-
-  app.keys = [config.get('auth.secret')];
+  app.keys = [config.get('authentication.secret')];
 
   /**
    * Get the current user.
@@ -43,6 +41,6 @@ module.exports = function setupApp() {
       ].join('/');
     }
 
-    this.body = await utils.render(tpl, _.defaults(data, this.state));
+    this.body = await render(tpl, _.defaults(data, this.state));
   };
 };
