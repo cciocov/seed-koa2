@@ -5,9 +5,22 @@
     "url": "DATABASE_URL",
     "logging": true
   },
-  "authentication": {
+  "public": {
+    "path": "../public",
+    "maxage": 0
+  },
+  "middleware": [
+    "$routeInfo",
+    "authorization",
+    "$actionMiddleware",
+    "$action"
+  ],
+  "security": {
     "secret": "SECRET",
     "tokenTTL": 86400,
+    "publicAPI": false
+  },
+  "authentication": {
     "local": true,
     "providers": {
       "facebook": {
@@ -51,10 +64,6 @@
       }
     }
   },
-  "public": {
-    "path": "../public",
-    "maxage": 0
-  },
   "views": {
     "path": "../views",
     "map": {
@@ -65,12 +74,6 @@
     },
     "defaultExt": "pug"
   },
-  "middleware": [
-    "$routeInfo",
-    "auth",
-    "$actionMiddleware",
-    "$action"
-  ],
   "permissions": [
     "-- only append to this array, nothing else --",
     {

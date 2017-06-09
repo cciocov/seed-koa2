@@ -2,7 +2,6 @@
 
 const _ = require('lodash');
 const consolidate = require('consolidate');
-const jwt = require('jsonwebtoken');
 const path = require('path');
 const config = require('_/config');
 
@@ -29,15 +28,6 @@ module.exports.render = function(tpl, data) {
   }
 
   return render(tpl, _.defaults(data, config.views.options));
-};
-
-/**
- * Create a JWT.
- */
-module.exports.createJWT = function(payload, options) {
-  return jwt.sign(payload, config.get('auth.secret'), Object.assign({
-    expiresIn: config.get('auth.tokenTTL')
-  }, options));
 };
 
 /**

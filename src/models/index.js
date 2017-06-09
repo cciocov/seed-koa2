@@ -3,7 +3,7 @@
 const fs = require('fs');
 const Sequelize = require('sequelize');
 
-const config = require('../../config');
+const config = require('_/config');
 
 const sequelize = new Sequelize(config.get('database.url'), {
   logging: config.get('database.logging') ? console.log : false

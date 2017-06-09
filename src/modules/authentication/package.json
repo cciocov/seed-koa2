@@ -1,28 +1,16 @@
 {
   "name": "@cciocov/be-module-authentication",
   "version": "0.0.1",
-  "private": true,
   "description": "Provides authentication.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/cciocov/be-module-authentication.git"
   },
   "author": "Catalin Ciocov",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cciocov/be-module-authentication/issues"
-  },
-  "homepage": "https://github.com/cciocov/be-module-authentication#readme",
-  "engines": {
-    "node": ">= 5.11.1"
-  },
   "dependencies": {
-    "jsonwebtoken": "7.2.1",
-    "koa-passport": "3.0.0-rc.3",
-    "moment": "2.17.1"
+    "jsonwebtoken": "7.4.1",
+    "koa-passport": "3.0.0",
+    "moment": "2.18.1"
   }
 }

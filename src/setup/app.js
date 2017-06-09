@@ -6,7 +6,7 @@ const models = require('_/models');
 const { render } = require('_/modules/utils');
 
 module.exports = function setupApp() {
-  app.keys = [config.get('authentication.secret')];
+  app.keys = [config.get('security.secret')];
 
   /**
    * Get the current user.

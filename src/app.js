@@ -2,6 +2,7 @@
 
 require('babel-polyfill');
 require('babel-register')({
+  ignore: /node_modules\/(?!(koa-bodyparser|koa-jwt)\/).*/,
   presets: ['latest'],
   plugins: ['transform-async-to-generator', 'transform-decorators-legacy']
 });

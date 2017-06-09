@@ -1,14 +1,13 @@
 'use strict';
 
-const { controller, route, auth } = require('_/modules/utils/decorators');
+import { route, requireUser } from '_/modules/utils/decorators';
 
 /**
  * This is a demo controller to showcase a few features. You'll want to disable
  * it by either deleting this file or renaming it to "_demo.js".
  */
 
-@controller()
-@auth(['admin'])
+@requireUser(false)
 export default class DemoController {
   @route('GET')
   async index(ctx) {

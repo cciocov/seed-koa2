@@ -20,6 +20,9 @@ const setupGraphQL = require('./graphql');
 const setupRoutes = require('./routes');
 
 module.exports = function() {
+  setupApp();
+
+  // global middleware:
   app
     .use(koaResponseTime())
     .use(koaMorgan('combined'))
@@ -32,13 +35,11 @@ module.exports = function() {
     .use(koaBodyParser())
     .use(errors(app))
     .use(koaJWT({
-      secret: config.get('authentication.secret'),
+      secret: config.get('security.secret'),
       passthrough: true,
       key: 'jwt',
       cookie: 'jwt'
     }));
-
-  setupApp();
 
   // application router:
   const router = app.router = new koaRouter();

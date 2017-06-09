@@ -1,13 +1,8 @@
 'use strict';
 
-const { uncamelize } = require('./');
-const _ = require('lodash');
-
-function decorate(fn) {
-  return function(target, key, descriptor) {
-    fn(target.prototype || target, key, descriptor);
-  };
-}
+import { decorate } from './utils';
+import { uncamelize } from '../';
+import { set } from 'lodash';
 
 /**
  * @controller
@@ -41,15 +36,15 @@ export function route(verbs, path) {
  */
 export function middleware(mws) {
   return decorate((target, key, descriptor) => {
-    _.set(target, `_middleware[${key || '*'}]`, mws);
+    set(target, `_middleware[${key || '*'}]`, mws);
   });
 }
 
 /**
- * @auth
+ * @requireUser
  */
-export function auth(roles) {
+export function requireUser(sw = true) {
   return decorate((target, key, descriptor) => {
-    _.set(target, `_auth[${key || '*'}]`, roles);
+    set(target, `_requireUser[${key || '*'}]`, sw);
   });
 }

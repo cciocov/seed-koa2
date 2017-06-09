@@ -1,11 +1,14 @@
 'use strict';
 
+import { createJWT } from './utils';
+
 const passport = require('./passport');
 const moment = require('moment');
-const config = require('_/config').get('authentication');
 const models = require('_/models');
 const { getBaseUrl } = require('_/modules/utils');
-const { controller, route, middleware, auth } = require('_/modules/utils/decorators');
+const { controller, route, middleware, requireUser } = require('_/modules/utils/decorators');
+
+const tokenTTL = require('_/config').get('security.tokenTTL');
 
 @controller({
   path: '/auth'
@@ -34,8 +37,8 @@ export default class AuthController {
   /**
    * Logout a user. Clears the JWT cookie.
    */
+  @requireUser()
   @route('GET')
-  @auth(true)
   logout(ctx) {
     ctx.cookies.set('jwt', null);
   
@@ -176,10 +179,18 @@ export default class AuthController {
 
   // send a user's JWT back to the client:
   sendJWT(user, ctx) {
-    const jwt = user.createJWT();
+    const payload = {
+      userId: user.id
+    };
+
+    if (user.permissions) {
+      payload.pa = user.permissions;
+    }
+
+    const jwt = createJWT(payload);
   
     ctx.cookies.set('jwt', jwt, {
-      expires: moment().add(config.get('tokenTTL'), 'seconds').toDate(),
+      expires: moment().add(tokenTTL, 'seconds').toDate(),
       signed: true
     });
   

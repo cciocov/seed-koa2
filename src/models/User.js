@@ -1,9 +1,16 @@
 'use strict';
 
+import { Model } from 'sequelize';
+import { Options, Attributes } from 'sequelize-decorators';
+
 const { createJWT } = require('_/modules/utils');
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('user', {
+  @Options({
+    sequelize,
+    tableName: 'users'
+  })
+  @Attributes({
     username: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -47,42 +54,37 @@ module.exports = function(sequelize, DataTypes) {
         return JSON.parse(this.getDataValue('permissions'));
       }
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // a user has many passports:
-        models.user.hasMany(models.passport);
-
-        // a user has many tokens:
-        models.user.hasMany(models.token);
-      }
-    },
-
-    instanceMethods: {
-      /**
-       * Determine if the user profile is complete or not.
-       */
-      isProfileComplete: function() {
-        return !!(
-          this.email && this.firstName && this.lastName
-        );
-      },
-
-      /**
-       * Create a JWT for this user.
-       */
-      createJWT: async function() {
-        return createJWT({
-          userId: this.id,
-          pa: this.permissions
-        });
-      }
-    },
-
-    hooks: {
-      beforeCreate: function(user) {
-        user.status = user.isProfileComplete() ? 'active' : 'incomplete';
-      }
+  })
+  class User extends Model {
+    /**
+     * Determine if the user profile is complete or not.
+     */
+    isProfileComplete() {
+      return !!(
+        this.email && this.firstName && this.lastName
+      );
     }
+  }
+
+  /**
+   * Associations
+   */
+  User.associate = function(models) {
+    // a user has many passports:
+    User.hasMany(models.Passport);
+
+    // a user has many tokens:
+    User.hasMany(models.Token);
+  };
+
+  /**
+   * Hooks
+   */
+
+  // set user status according to profile information being complete or not:
+  User.beforeCreate((user) => {
+    user.status = user.isProfileComplete() ? 'active' : 'incomplete';
   });
+
+  return User;
 };

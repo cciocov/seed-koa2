@@ -1,7 +1,14 @@
 'use strict';
 
+import { Model } from 'sequelize';
+import { Options, Attributes } from 'sequelize-decorators';
+
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('passport', {
+  @Options({
+    sequelize,
+    tableName: 'passports'
+  })
+  @Attributes({
     provider: {
       type: DataTypes.STRING,
       allowNull: false
@@ -22,12 +29,17 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // a passport belongs to a user:
-        models.passport.belongsTo(models.user);
-      }
-    }
-  });
+  })
+  class Passport extends Model {
+  }
+
+  /**
+   * Associations
+   */
+  Passport.associate = function(models) {
+    // a passport belongs to a user:
+    Passport.belongsTo(models.User);
+  };
+
+  return Passport;
 };
